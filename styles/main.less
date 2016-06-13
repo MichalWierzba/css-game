@@ -1,5 +1,6 @@
 @stage-width: 80%;
 @stage-height: 60%;
+
 @sky-color: #32b6be;
 @ground-color: #12982c;
 @trunk-color: #7a4c43;
@@ -10,8 +11,8 @@
 @target-destroyed-color: #f00;
 @over-color: #ffa500;
 
-@number-of-targets: 7;
-@game-time: 7s;
+@number-of-targets: 7; // maximum number of targets is 15 (if you need more you should add them in index.html file)
+@game-time: 7s;        // delay for showing "GAME OVER"
 
 @random-100: floor(`Math.random() * 80`);
 @random-10: floor(`Math.random() * 10 + 1`);
