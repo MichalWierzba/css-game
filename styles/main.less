@@ -110,7 +110,7 @@ body {
     }
   }
 
-  @keyframes move-up { // todo rename to move-up
+  @keyframes move-up {
     from {
       top: 300%;
     }
@@ -177,7 +177,7 @@ body {
     animation-iteration-count: infinite, 1;
     animation-direction: alternate, normal;
     animation-timing-function: linear;
-    left: -50%; // todo set to -50%
+    left: -50%;
     top: 50%;
     position: absolute;
     cursor: crosshair;
@@ -214,8 +214,6 @@ body {
 
       &::after {
         background: @target-destroyed-color;
-        // todo
-        // box-shadow: 0 0 10px #fefcc9, 5px -5px 15px #feec85, -10px -10px 20px #ffae34, 10px -20px 25px #ec760c, -10px -30px 30px #cd4606, 0 -40px 35px #973716, 5px -45px 40px #451b0e;
       }
     }
   }
@@ -229,7 +227,7 @@ body {
     text-align: center;
     cursor: default;
 
-    animation-name: move-up; // TODO
+    animation-name: move-up;
     animation-delay: @game-time;
     animation-play-state: running;
     animation-fill-mode: both;
