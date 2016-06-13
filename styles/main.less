@@ -1,0 +1,260 @@
+@stage-width: 80%;
+@stage-height: 60%;
+@sky-color: #32b6be;
+@ground-color: #12982c;
+@trunk-color: #7a4c43;
+@sun-color: #e1e437;
+@cloud-color: #fcfcfc;
+@target-primary-color: #737373;
+@target-secondary-color: #ccc;
+@target-destroyed-color: #f00;
+@over-color: #ffa500;
+
+@number-of-targets: 7;
+@game-time: 7s;
+
+@random-100: floor(`Math.random() * 80`);
+@random-10: floor(`Math.random() * 10 + 1`);
+
+.generateRandomValues() {
+  @random-top: unit(@random-100, %);
+  @random-duration: unit(@random-10, s);
+} .generateRandomValues();
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Oswald", sans-serif;
+}
+
+body {
+  counter-reset: score;
+}
+
+.stage {
+  width: @stage-width;
+  height: @stage-height;
+  background-color: @sky-color;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: crosshair;
+  overflow: hidden;
+
+  .results {
+    padding: 10px;
+
+    &::after {
+      content: "Score: " counter(score);
+    }
+  }
+
+  .ground {
+    width: 100%;
+    height: 20%;
+    background-color: @ground-color;
+    position: absolute;
+    bottom: 0;
+  }
+
+  .sun {
+    width: 35px;
+    height: 35px;
+    background-color: @sun-color;
+    border-radius: 50%;
+    position: absolute;
+    right: 10%;
+    top: 10%;
+  }
+
+  #cloud-2 {
+    left: 75%;
+    top: 35%;
+  }
+
+  .cloud {
+    z-index: 1;
+    width: 70px;
+    height: 25px;
+    background-color: @cloud-color;
+    border-radius: 50px;
+    position: absolute;
+    left: 10%;
+    top: 15%;
+
+    &::before {
+      content: "";
+      width: 35px;
+      height: 45px;
+      background-color: @cloud-color;
+      border-radius: 50px;
+      position: absolute;
+      left: 15%;
+      top: -50%;
+    }
+
+    &::after {
+      content: "";
+      width: 30px;
+      height: 30px;
+      background-color: @cloud-color;
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: -35%;
+    }
+  }
+
+  @keyframes move-up { // todo rename to move-up
+    from {
+      top: 300%;
+    }
+
+    to {
+      top: 0;
+    }
+  }
+
+  @keyframes move-right {
+    from {
+      left: -50%;
+    }
+
+    to {
+      left: 150%;
+    }
+  }
+
+  .move-down(@suffix, @top-value) {
+
+    @keyframes ~"move-down-@{suffix}" {
+      from {
+        top: @top-value;
+      }
+
+      to {
+        top: 200%;
+      }
+    }
+  }
+
+  .target(@suffix) {
+    .generateRandomValues();
+    @duration: @random-duration;
+    @top: @random-top;
+    @name: ~"move-down-@{suffix}";
+
+    #target-@{suffix} {
+      animation-duration: @duration, 1.5s;
+      animation-name: move-right, @name;
+      top: @top;
+
+      &:checked {
+        animation-duration: @duration, 1.5s;
+        animation-name: move-right, @name;
+      }
+    }
+
+    .move-down(@suffix, @top);
+  }
+
+  .generate-targets(@number-of-targets);
+
+  .generate-targets(@n, @i: 1) when (@i =< @n) {
+    .target(@i);
+    .generate-targets(@n, (@i + 1));
+  }
+
+  .target {
+    animation-delay: 0s, 0s;
+    animation-play-state: running, paused;
+    animation-fill-mode: both, both;
+    animation-iteration-count: infinite, 1;
+    animation-direction: alternate, normal;
+    animation-timing-function: linear;
+    left: -50%; // todo set to -50%
+    top: 50%;
+    position: absolute;
+    cursor: crosshair;
+
+    &::before {
+      content: "";
+      width: 20px;
+      height: 10px;
+      left: 3px;
+      top: 8px;
+      position: absolute;
+      background-color: @target-secondary-color;
+    }
+
+    &::after {
+      content: "";
+      width: 95px;
+      height: 25px;
+      border-radius: 100%;
+      position: absolute;
+      left: -33px;
+      top: -10px;
+      background: linear-gradient(0deg, @target-primary-color 7px, @target-secondary-color 17px);
+    }
+
+    &:checked {
+      counter-increment: score;
+      animation-delay: 0s, 0s;
+      animation-play-state: running, running;
+      animation-fill-mode: both, both;
+      animation-iteration-count: infinite, 1;
+      animation-direction: alternate, normal;
+      animation-timing-function: linear;
+
+      &::after {
+        background: @target-destroyed-color;
+        // todo
+        // box-shadow: 0 0 10px #fefcc9, 5px -5px 15px #feec85, -10px -10px 20px #ffae34, 10px -20px 25px #ec760c, -10px -30px 30px #cd4606, 0 -40px 35px #973716, 5px -45px 40px #451b0e;
+      }
+    }
+  }
+
+  .over {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 300%;
+    background-color: @over-color;
+    text-align: center;
+    cursor: default;
+
+    animation-name: move-up; // TODO
+    animation-delay: @game-time;
+    animation-play-state: running;
+    animation-fill-mode: both;
+    animation-iteration-count: 1;
+    animation-duration: 750ms;
+
+    div {
+      display: block;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute;
+      left: 50%;
+
+      h1 {
+        font-size: 100px;
+      }
+
+      span {
+        margin-top: 15px;
+        display: block;
+
+        &::after {
+          content: "Score: " counter(score);
+        }
+      }
+    }
+  }
+}
